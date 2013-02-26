@@ -25,6 +25,15 @@ function ONECOLOR(obj) {
             // Assumed 4 element int RGB array from canvas with all channels [0;255]
             return new ONECOLOR.RGB(obj[0] / 255, obj[1] / 255, obj[2] / 255, obj[3] / 255);
         }
+    } else if (Object.prototype.toString.apply(obj) === "[object Number]") {
+        var red = Math.floor(obj / 0x10000);
+        var green = Math.floor(( obj - ( red * 0x10000 ) ) / 0x100);
+        var blue = obj - ( red * 0x10000 ) - ( green * 0x100 );
+        return new ONECOLOR.RGB(
+            red / 255,
+            green / 255,
+            blue / 255
+        );
     } else if (typeof obj === 'string') {
         var lowerCased = obj.toLowerCase();
         if (namedColors[lowerCased]) {
@@ -63,6 +72,16 @@ function ONECOLOR(obj) {
                 parseInt(hexMatch[3], 16) / 255
             );
         }
+        // kmlFormat
+        var kmlHexMatch = obj.match(/^([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])$/i);
+        if (kmlHexMatch) {
+            return new ONECOLOR.RGB(
+                parseInt(kmlHexMatch[4], 16) / 255,
+                parseInt(kmlHexMatch[3], 16) / 255,
+                parseInt(kmlHexMatch[2], 16) / 255,
+                parseInt(kmlHexMatch[1], 16) / 255
+            );
+        }
     } else if (typeof obj === 'object' && obj.isColor) {
         return obj;
     } else if (!isNaN(obj)) {
@@ -99,7 +118,7 @@ function installColorSpace(colorSpaceName, propertyNames, config) {
 
     var prototype = ONECOLOR[colorSpaceName].prototype;
 
-    ['valueOf', 'hex', 'hexa', 'css', 'cssa'].forEach(function (methodName) {
+    ['valueOf', 'hex', 'hexa', 'css', 'cssa', 'threejs', 'kml'].forEach(function (methodName) {
         prototype[methodName] = prototype[methodName] || (colorSpaceName === 'RGB' ? prototype.hex : new Function("return this.rgb()." + methodName + "();"));
     });
 
@@ -211,6 +230,15 @@ installColorSpace('RGB', ['red', 'green', 'blue', 'alpha'], {
 
     cssa: function () {
         return "rgba(" + Math.round(255 * this._red) + "," + Math.round(255 * this._green) + "," + Math.round(255 * this._blue) + "," + this._alpha + ")";
+    },
+
+    threejs: function () {
+        return Math.round(255 * this._red) * 0x10000 + Math.round(255 * this._green) * 0x100 + Math.round(255 * this._blue);
+    },
+
+    kml: function () {
+        var hexString = (Math.round(255 * this._alpha) * 0x1000000 +Math.round(255 * this._blue) * 0x10000 + Math.round(255 * this._green) * 0x100 + Math.round(255 * this._red)).toString(16);
+        return ('0000000'.substr(0, 8 - hexString.length)) + hexString;
     }
 });
 
@@ -381,6 +409,7 @@ namedColors = {
 
 /*global one*/
 
+
 installColorSpace('HSV', ['hue', 'saturation', 'value', 'alpha'], {
     rgb: function () {
         var hue = this._hue,
@@ -476,6 +505,8 @@ installColorSpace('HSV', ['hue', 'saturation', 'value', 'alpha'], {
 /*global one*/
 
 
+
+
 installColorSpace('HSL', ['hue', 'saturation', 'lightness', 'alpha'], {
     hsv: function () {
         // Algorithm adapted from http://wiki.secondlife.com/wiki/Color_conversion_scripts
@@ -503,6 +534,7 @@ installColorSpace('HSL', ['hue', 'saturation', 'lightness', 'alpha'], {
 });
 
 /*global one*/
+
 
 installColorSpace('CMYK', ['cyan', 'magenta', 'yellow', 'black', 'alpha'], {
     rgb: function () {
@@ -538,9 +570,11 @@ ONECOLOR.installMethod('clearer', function (amount) {
 });
 
 
+
 ONECOLOR.installMethod('darken', function (amount) {
     return this.lightness(isNaN(amount) ? -0.1 : -amount, true);
 });
+
 
 
 ONECOLOR.installMethod('desaturate', function (amount) {
@@ -556,6 +590,7 @@ function gs () {
 
 ONECOLOR.installMethod('greyscale', gs);
 ONECOLOR.installMethod('grayscale', gs);
+
 
 
 ONECOLOR.installMethod('lighten', function (amount) {
@@ -592,6 +627,7 @@ ONECOLOR.installMethod('opaquer', function (amount) {
 ONECOLOR.installMethod('rotate', function (degrees) {
     return this.hue((degrees || 0) / 360, true);
 });
+
 
 
 ONECOLOR.installMethod('saturate', function (amount) {
@@ -649,5 +685,21 @@ ONECOLOR.installMethod('toAlpha', function (color) {
 
 // This file is purely for the build system
 
+
+
+
+
+
 // Convenience functions
+
+
+
+
+
+
+
+
+
+
+
 
