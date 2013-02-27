@@ -118,7 +118,7 @@ function installColorSpace(colorSpaceName, propertyNames, config) {
 
     var prototype = ONECOLOR[colorSpaceName].prototype;
 
-    ['valueOf', 'hex', 'hexa', 'css', 'cssa', 'threejs', 'kml'].forEach(function (methodName) {
+    ['valueOf', 'hex', 'hexa', 'css', 'cssa', 'threejs', 'toNumber', 'kml'].forEach(function (methodName) {
         prototype[methodName] = prototype[methodName] || (colorSpaceName === 'RGB' ? prototype.hex : new Function("return this.rgb()." + methodName + "();"));
     });
 
@@ -233,6 +233,10 @@ installColorSpace('RGB', ['red', 'green', 'blue', 'alpha'], {
     },
 
     threejs: function () {
+        return Math.round(255 * this._red) * 0x10000 + Math.round(255 * this._green) * 0x100 + Math.round(255 * this._blue);
+    },
+
+    toNumber: function () {
         return Math.round(255 * this._red) * 0x10000 + Math.round(255 * this._green) * 0x100 + Math.round(255 * this._blue);
     },
 
