@@ -512,7 +512,6 @@ installColorSpace('LAB', ['l', 'a', 'b', 'alpha'], {
 
 /*global one*/
 
-
 installColorSpace('HSV', ['hue', 'saturation', 'value', 'alpha'], {
     rgb: function () {
         var hue = this._hue,
@@ -608,8 +607,6 @@ installColorSpace('HSV', ['hue', 'saturation', 'value', 'alpha'], {
 /*global one*/
 
 
-
-
 installColorSpace('HSL', ['hue', 'saturation', 'lightness', 'alpha'], {
     hsv: function () {
         // Algorithm adapted from http://wiki.secondlife.com/wiki/Color_conversion_scripts
@@ -637,7 +634,6 @@ installColorSpace('HSL', ['hue', 'saturation', 'lightness', 'alpha'], {
 });
 
 /*global one*/
-
 
 installColorSpace('CMYK', ['cyan', 'magenta', 'yellow', 'black', 'alpha'], {
     rgb: function () {
@@ -673,11 +669,9 @@ ONECOLOR.installMethod('clearer', function (amount) {
 });
 
 
-
 ONECOLOR.installMethod('darken', function (amount) {
     return this.lightness(isNaN(amount) ? -0.1 : -amount, true);
 });
-
 
 
 ONECOLOR.installMethod('desaturate', function (amount) {
@@ -693,7 +687,6 @@ function gs () {
 
 ONECOLOR.installMethod('greyscale', gs);
 ONECOLOR.installMethod('grayscale', gs);
-
 
 
 ONECOLOR.installMethod('lighten', function (amount) {
@@ -730,7 +723,6 @@ ONECOLOR.installMethod('opaquer', function (amount) {
 ONECOLOR.installMethod('rotate', function (degrees) {
     return this.hue((degrees || 0) / 360, true);
 });
-
 
 
 ONECOLOR.installMethod('saturate', function (amount) {
@@ -791,15 +783,4 @@ ONECOLOR.installMethod('toAlpha', function (color) {
 // Order is important to prevent channel name clashes. Lab <-> hsL
 
 // Convenience functions
-
-
-
-
-
-
-
-
-
-
-
 

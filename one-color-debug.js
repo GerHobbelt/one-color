@@ -264,7 +264,6 @@ if (typeof jQuery !== 'undefined' && undef(jQuery.color)) {
 
 /*global one*/
 
-
 installColorSpace('HSV', ['hue', 'saturation', 'value', 'alpha'], {
     rgb: function () {
         var hue = this._hue,
@@ -360,8 +359,6 @@ installColorSpace('HSV', ['hue', 'saturation', 'value', 'alpha'], {
 /*global one*/
 
 
-
-
 installColorSpace('HSL', ['hue', 'saturation', 'lightness', 'alpha'], {
     hsv: function () {
         // Algorithm adapted from http://wiki.secondlife.com/wiki/Color_conversion_scripts
@@ -391,7 +388,4 @@ installColorSpace('HSL', ['hue', 'saturation', 'lightness', 'alpha'], {
 /*global one*/
 
 // This file is purely for the build system
-
-
-
 
